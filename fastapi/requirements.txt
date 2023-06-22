@@ -1,0 +1,14 @@
+fastapi 
+uvicorn[standard]
+pydantic 
+typing 
+gunicorn 
+openpyxl 
+boto3==1.26.150 
+python-multipart
+fsspec
+s3fs
+pandas==1.4.3
+mlflow==2.4
+opencv-python
+tensorflow==2.9.2
