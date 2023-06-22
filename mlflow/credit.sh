@@ -1,0 +1,4 @@
+export AWS_ACCESS_KEY_ID="AKIA3R62MVALEYIZYEIG"
+export AWS_SECRET_ACCESS_KEY="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"
+export ARTIFACT_STORE_URI="s3://duranty-paris/model/"
+export BACKEND_STORE_URI=""
