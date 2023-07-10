@@ -1,15 +1,11 @@
-# heroku container:login
+heroku container:login
 
-# heroku create heidi-ynov-api 
+docker build . -t 280720/muspellheim-api
 
-# docker buildx build --platform linux/amd64 -t heidi-ynov-api  .
+docker tag 280720/muspellheim-api  registry.heroku.com/muspellheim-api/web
 
-docker build . -t heidi-ynov-api 
+docker push registry.heroku.com/muspellheim-api/web
 
-docker tag heidi-ynov-api  registry.heroku.com/heidi-ynov-api/web
+heroku container:release web -a muspellheim-api
 
-docker push registry.heroku.com/heidi-ynov-api/web
-
-heroku container:release web -a heidi-ynov-api 
-
-heroku open -a heidi-ynov-api
+heroku open -a muspellheim-api
