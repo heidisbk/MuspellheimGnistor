@@ -32,7 +32,7 @@ def result():
             img_url = request.form['input_text']
             urllib.request.urlretrieve(img_url, path)
 
-            response = requests.get('https://heidi-ynov-api-f5d278fe7daa.herokuapp.com/predict', params={'img_url': img_url}).json()
+            response = requests.get('http://localhost:3000/predict', params={'img_url': img_url}).json()
 
             print(response)
 
