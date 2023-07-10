@@ -1,15 +1,11 @@
-# heroku container:login
+heroku container:login
 
-# heroku create heidi-ynov-flask 
+docker build . -t flask_muspellheim
 
-# docker buildx build --platform linux/amd64 -t heidi-ynov-flask  .
+docker tag flask_muspellheim registry.heroku.com/muspellheim/web
 
-docker build . -t heidi-ynov-flask
+docker push registry.heroku.com/muspellheim/web
 
-docker tag heidi-ynov-flask  registry.heroku.com/heidi-ynov-flask/web
+heroku container:release web -a muspellheim
 
-docker push registry.heroku.com/heidi-ynov-flask/web
-
-heroku container:release web -a heidi-ynov-flask 
-
-heroku open -a heidi-ynov-flask
+heroku open -a muspellheim
