@@ -98,3 +98,6 @@ def predict(img_url:str):
         }
 
     return result
+
+if __name__ == "__main__":
+    app.run(port=8000)
