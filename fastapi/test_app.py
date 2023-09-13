@@ -40,8 +40,6 @@ def test_num_class_model():
     loaded_weights = torch.load(model_file_path)
     model.load_state_dict(loaded_weights)
     assert model.fc.out_features == 2 
-    
-
 
 
 def test_root():
