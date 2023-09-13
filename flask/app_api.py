@@ -15,12 +15,10 @@ date = date_time()
 app = Flask(__name__)
 
 
-
-# Page d'acceuil
+# Page d'accueil
 @app.route('/', methods=['GET'])
 def app_home():
     return render_template("index.html", date=date)
-
 
 
 # Page d'action
@@ -35,13 +33,12 @@ def result():
             # response = requests.get('https://muspellheim-api.azurewebsites.net/predict', params={'img_url': img_url}).json()
             response = requests.get('http://127.0.0.1:8000/predict', params={'img_url': img_url}).json()
 
-            print(response)
-
             return render_template("submit.html", img=img_url,
                                    prediction=response['Prediction'],
                                    accuracy=response['Probabilité'])
         except:
             return render_template("submit.html")
+
 
 if __name__ == '__main__':
     app.run()
