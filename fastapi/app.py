@@ -1,10 +1,10 @@
 # Import FastAPI and Uvicorn
 import uvicorn
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, HTTPException  
 import requests
 import os
 from cv2 import imread, resize
-from azure.storage.blob import BlobServiceClient
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import torch
 import torchvision.models as models
 from torchvision import transforms
@@ -30,17 +30,16 @@ if len(os.listdir('./model/')) == 0:
 
 
 loaded_model = torch.load(f="./model/resnet50_1.pt")
-model = models.resnet50()
+model = models.resnet50(num_classes=2,weights=None)
+model.load_state_dict(loaded_model)
 
 # Documentation description
 description = """
 
 # Documentation Ynov API
 
-*  Méthode Get : /square
-*  Méthode Post : /images
+*  Méthode Get : /root
 *  Méthode Get : /predict
-*  Méthode Post : /articles
 """
 
 # Documentation tags
@@ -48,11 +47,11 @@ description = """
 tags_metadata = [
     {
         "name": "Méthode Get",
-        "description": "Méthode Get : /square",
+        "description": "Méthode Get : /root",
     },
     {
         "name": "Méthode Post",
-        "description": "Méthode Post : /articles",
+        "description": "Méthode Get : /predict",
     },
 ]
 
@@ -70,34 +69,37 @@ async def root():
 
 
 @app.get("/predict", tags=["Méthode Get"])
-def predict(img_url:str):
+def predict(img_url: str):
+    try:
+        open('img.jpeg', 'wb').write(requests.get(img_url).content)
+        img = imread('img.jpeg')
+        transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Resize((256, 256), antialias=True)
+        ])
 
-    open('img.jpeg', 'wb').write(requests.get(img_url).content)
-    img = imread('img.jpeg')
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Resize((256,256))
-    ])
-    
-    img_tensor = transform(img).unsqueeze(0)
-    model.eval()
-    with torch.no_grad():
-        output = model(img_tensor)
-    
-    _, predicted_idx = torch.max(output, 1)
-    
-    dict_value = {'0': 'leo', '1': 'orion'}
-    class_predict = dict_value[str(int(predicted_idx> 0.5))]
-    
-    probability = torch.softmax(output, dim=1)[0]
-    predicted_probability = probability[predicted_idx].item()
-    
-    result = {
-        "Prediction" : str(class_predict),
-        "Probabilité" : str(predicted_probability)
+        img_tensor = transform(img).unsqueeze(0)
+        model.eval()
+        with torch.no_grad():
+            output = model(img_tensor)
+
+        _, predicted_idx = torch.max(output, 1)
+
+        dict_value = {'0': 'leo', '1': 'orion'}
+        class_predict = dict_value[str(int(predicted_idx > 0.5))]
+
+        probability = torch.softmax(output, dim=1)[0]
+        predicted_probability = probability[predicted_idx].item()
+
+        result = {
+            "Prediction": str(class_predict),
+            "Probabilité": str(predicted_probability)
         }
 
-    return result
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=422, detail="URL is not a valid image")
+
 
 if __name__ == "__main__":
     app.run(port=8000)

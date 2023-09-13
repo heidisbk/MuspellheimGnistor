@@ -11,3 +11,5 @@ opencv-python
 torch
 torchvision
 azure-storage-blob
+httpx
+pytest
