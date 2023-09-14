@@ -14,7 +14,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-    - run: echo "selected runner = ${{ runner.name }}"
 
   install_dependencies:
     needs: runner
