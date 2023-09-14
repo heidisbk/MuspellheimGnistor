@@ -8,7 +8,7 @@ on:
 jobs:
   runner:
     if: ${{ always() }}
-    runs-on: ubuntu-latest
+    runs-on: custom-runner
     outputs:
         RUNNER: ${{ runner.name }}
 
