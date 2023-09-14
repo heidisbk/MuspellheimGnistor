@@ -3,28 +3,61 @@ name: CI
 on:
   push:
     branches:
-      - dev_traitement_dataset 
+      - dev_traitement_dataset
 
 jobs:
-  build:
+  install_dependencies:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout Repository
       uses: actions/checkout@v2
 
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8 
+        python-version: 3.10 
 
-    - name: Install dependencies
+    - name: Install Dependencies
       run: |
-        pip install -r fastapi/requirements.txt  
+        pip install -r fastapi/requirements.txt 
         pip install -r flask/requirements.txt    
-        pip install -r mlflow/requirements.txt    
+        pip install -r mlflow/requirements.txt
 
-    - name: Run tests
-      run: |
-        pytest fastapi/test_app.py
-        pytest flask/test_app.py
+  pytest_flask:
+    needs: install_dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10
+
+    - name: Change to Flask Directory
+      run: cd ./flask
+
+    - name: Run Flask Tests
+      run: pytest test_app.py
+
+  pytest_fastapi:
+    needs: install_dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10
+
+    - name: Change to FastAPI Directory
+      run: cd ./fastapi
+
+    - name: Run FastAPI Tests
+      run: pytest test_app.py
