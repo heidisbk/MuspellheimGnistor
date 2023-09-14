@@ -24,6 +24,7 @@ jobs:
         pip install -r fastapi/requirements.txt 
         pip install -r flask/requirements.txt    
         pip install -r mlflow/requirements.txt
+        pip install pytest
 
   pytest_flask:
     needs: install_dependencies
