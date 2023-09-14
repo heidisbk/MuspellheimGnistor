@@ -24,12 +24,12 @@ def download_blob_to_file(file_name, file_path, container_name):
         sample_blob.write(download_stream.readall())
 file_name = 'resnet50_1.pt' 
 
-if len(os.listdir('./fastapi/model/')) == 0:   
+if len(os.listdir('./model/')) == 0:   
     print('Download model')     
-    download_blob_to_file(file_name, './fastapi/model/'+file_name,'muspellheim')
+    download_blob_to_file(file_name, './model/'+file_name,'muspellheim')
 
 
-loaded_model = torch.load(f="./fastapi/model/resnet50_1.pt")
+loaded_model = torch.load(f="./model/resnet50_1.pt")
 model = models.resnet50(num_classes=2,weights=None)
 model.load_state_dict(loaded_model)
 

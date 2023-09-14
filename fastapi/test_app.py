@@ -18,7 +18,7 @@ def test_download_blob_to_file(mock_from_connection_string, mock_open):
     mock_blob_client.download_blob.return_value.readall.return_value = b"Contenu du blob"
 
     # call test function
-    download_blob_to_file('resnet50_1.pt', "./fastapi/model/resnet50_1.pt", "muspellheim")
+    download_blob_to_file('resnet50_1.pt', "./model/resnet50_1.pt", "muspellheim")
 
     # Assertions
     mock_from_connection_string.assert_called_once_with(
@@ -29,13 +29,13 @@ def test_download_blob_to_file(mock_from_connection_string, mock_open):
         blob="resnet50_1.pt"
     )
     mock_blob_client.download_blob.return_value.readall.assert_called_once_with()
-    mock_open.assert_called_once_with(file="./fastapi/model/resnet50_1.pt",mode='wb')
+    mock_open.assert_called_once_with(file="./model/resnet50_1.pt",mode='wb')
     mock_open.return_value.write.assert_called_once_with(b"Contenu du blob")
 
 
 def test_num_class_model():
 
-    model_file_path = "./fastapi/model/resnet50_1.pt"
+    model_file_path = "./model/resnet50_1.pt"
     model = models.resnet50(num_classes=2, weights=None)
     loaded_weights = torch.load(model_file_path)
     model.load_state_dict(loaded_weights)
