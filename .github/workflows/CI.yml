@@ -18,7 +18,7 @@ jobs:
     - run: echo "selected runner = ${{ runner.name }}"
 
   install_dependencies:
-    needs: runner
+    needs: [runner]
     runs-on: ${{ needs.runner.outputs.RUNNER }}
 
     steps:
