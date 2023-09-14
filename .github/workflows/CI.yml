@@ -19,6 +19,14 @@ jobs:
         python-version: "3.10"
         cache: "pip"
 
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: pip-${{ runner.os }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
+        restore-keys: |
+          pip-${{ runner.os }}-
+
     - name: Install Dependencies
       run: |
         pip install -r fastapi/requirements.txt 
@@ -39,9 +47,11 @@ jobs:
         python-version: "3.10"
         cache: "pip"
 
+    - name: Change to Flask Directory
+      run: cd ./flask
+
     - name: Run Flask Tests
       run: |
-        cd ./flask
         pip install pytest
         pytest test_app.py
 
@@ -59,8 +69,10 @@ jobs:
         python-version: "3.10"
         cache: "pip"
 
+    - name: Change to FastAPI Directory
+      run: cd ./fastapi
+
     - name: Run FastAPI Tests
       run: |
-        cd ./fastapi
         pip install pytest
         pytest test_app.py
