@@ -8,14 +8,17 @@ on:
 jobs:
   runner:
     runs-on: ubuntu-latest
+    outputs:
+        RUNNER: ${{ runner.name }}
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
+    - run: echo "selected runner = ${{ runner.name }}"
 
   install_dependencies:
     needs: runner
-    runs-on: ${{ needs.runner.outputs.runner-os }}
+    runs-on: ${{ needs.runner.outputs.RUNNER }}
 
     steps:
     - name: Set up Python
@@ -28,9 +31,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: /github/home/.cache/pip
-        key: pip-${{ needs.runner.outputs.runner-os }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
+        key: pip-${{ needs.runner.outputs.RUNNER }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
         restore-keys: |
-          pip-${{ needs.runner.outputs.runner-os }}-
+          pip-${{ needs.runner.outputs.RUNNER }}-
 
     - name: Install Dependencies
       run: |
@@ -40,7 +43,7 @@ jobs:
 
   pytest_flask:
     needs: install_dependencies
-    runs-on: ${{ needs.runner.outputs.runner-os }}
+    runs-on: ${{ needs.runner.outputs.RUNNER }}
 
     steps:
     - name: Set up Python
@@ -56,7 +59,7 @@ jobs:
 
   pytest_fastapi:
     needs: install_dependencies
-    runs-on: ${{ needs.runner.outputs.runner-os }}
+    runs-on: ${{ needs.runner.outputs.RUNNER }}
 
     steps:
     - name: Set up Python
