@@ -6,13 +6,18 @@ on:
       - dev_traitement_dataset
 
 jobs:
-  install_dependencies:
+  runner:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
+  install_dependencies:
+    needs: runner
+    runs-on: ${{ needs.runner.outputs.runner-os }}
+
+    steps:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -22,10 +27,10 @@ jobs:
     - name: Cache dependencies
       uses: actions/cache@v3
       with:
-        path: /github/home/.cache/pip 
-        key: pip-${{ runner.os }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
+        path: /github/home/.cache/pip
+        key: pip-${{ needs.runner.outputs.runner-os }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
         restore-keys: |
-          pip-${{ runner.os }}-
+          pip-${{ needs.runner.outputs.runner-os }}-
 
     - name: Install Dependencies
       run: |
@@ -35,17 +40,13 @@ jobs:
 
   pytest_flask:
     needs: install_dependencies
-    runs-on: ubuntu-latest
+    runs-on: ${{ needs.runner.outputs.runner-os }}
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-
-    - name: Set up Python
+    - name: Use Python from cache
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
-        cache: "pip"
 
     - name: Run Flask Tests
       run: |
@@ -55,17 +56,13 @@ jobs:
 
   pytest_fastapi:
     needs: install_dependencies
-    runs-on: ubuntu-latest
+    runs-on: ${{ needs.runner.outputs.runner-os }}
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-
-    - name: Set up Python
+    - name: Use Python from cache
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
-        cache: "pip"
 
     - name: Run FastAPI Tests
       run: |
