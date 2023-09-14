@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main 
+      - dev_traitement_dataset 
 
 jobs:
   build:
