@@ -8,68 +8,68 @@ on:
 jobs:
   runner:
     if: ${{ always() }}
-    runs-on: custom-runner
+    runs-on: ubuntu-latest
     outputs:
-        RUNNER: ${{ runner.name }}
+      RUNNER: ${{ runner.name }}
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
-    - run: echo "selected runner = ${{ runner.name }}"
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - run: echo "selected runner = ${{ runner.name }}"
 
   install_dependencies:
     needs: [runner]
     runs-on: ${{ needs.runner.outputs.RUNNER }}
 
     steps:
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
-        cache: "pip"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip"
 
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: /github/home/.cache/pip
-        key: pip-${{ needs.runner.outputs.RUNNER }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
-        restore-keys: |
-          pip-${{ needs.runner.outputs.RUNNER }}-
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: /github/home/.cache/pip
+          key: pip-${{ needs.runner.outputs.RUNNER }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
+          restore-keys: |
+            pip-${{ needs.runner.outputs.RUNNER }}-
 
-    - name: Install Dependencies
-      run: |
-        pip install -r fastapi/requirements.txt 
-        pip install -r flask/requirements.txt    
-        pip install -r mlflow/requirements.txt
+      - name: Install Dependencies
+        run: |
+          pip install -r fastapi/requirements.txt 
+          pip install -r flask/requirements.txt    
+          pip install -r mlflow/requirements.txt
 
   pytest_flask:
-    needs: [install_dependencies,runner]
+    needs: [install_dependencies, runner]
     runs-on: ${{ needs.runner.outputs.RUNNER }}
 
     steps:
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
-    - name: Run Flask Tests
-      run: |
-        cd ./flask
-        pip install pytest
-        pytest test_app.py
+      - name: Run Flask Tests
+        run: |
+          cd ./flask
+          pip install pytest
+          pytest test_app.py
 
   pytest_fastapi:
-    needs: [install_dependencies,runner]
+    needs: [install_dependencies, runner]
     runs-on: ${{ needs.runner.outputs.RUNNER }}
 
     steps:
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
-    - name: Run FastAPI Tests
-      run: |
-        cd ./fastapi
-        pip install pytest
-        pytest test_app.py
+      - name: Run FastAPI Tests
+        run: |
+          cd ./fastapi
+          pip install pytest
+          pytest test_app.py
