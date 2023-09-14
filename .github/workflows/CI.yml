@@ -20,7 +20,7 @@ jobs:
         cache: "pip"
 
     - name: Cache dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: /github/home/.cache/pip 
         key: pip-${{ runner.os }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
