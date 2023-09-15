@@ -20,9 +20,9 @@ jobs:
           cache: "pip"
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
-          path: /github/home/.cache/pip
+          path: ~/.cache/pip
           key: pip-${{ runner.os }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
           restore-keys: |
             pip-${{ runner.os }}-
@@ -46,11 +46,14 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Run Flask Tests
+      - name: Start FastAPI
         run: |
           cd ./fastapi
           uvicorn app:app &
-          cd ..
+          sleep 5  # Attendre quelques secondes pour que FastAPI démarre
+
+      - name: Run Flask Tests
+        run: |
           cd ./flask
           pip install -r requirements.txt
           pytest test_app.py
