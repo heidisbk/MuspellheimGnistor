@@ -20,6 +20,7 @@ pip install -r requirements.txt
 3. Aller ensuite sur la première url contenue dans le terminal.
 4. Une fois la page web ouverte, entrez l'url d'une image puis cliquer sur le bouton "Lancez la prédiction" pour que l'application fonctionne.
 
+
 ## Structure du Projet
 
 Le projet est organisé de la manière suivante :
