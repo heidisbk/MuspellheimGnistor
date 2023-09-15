@@ -50,7 +50,7 @@ jobs:
         run: |
           cd ./flask
           pip install -r requirements.txt
-          npm install wait-on
+          npm install -g wait-on
           wait-on http://127.0.0.1:8000/ && pytest test_app.py
 
   pytest_fastapi:
