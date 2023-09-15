@@ -14,7 +14,6 @@ RUN pip install -r /dependencies/requirements.txt
 
 COPY . /home/app
 
-
 #CMD gunicorn app_api:app --bind 0.0.0.0:600 --worker-class uvicorn.workers.UvicornWorker
 
 ENV PORT=$PORT
