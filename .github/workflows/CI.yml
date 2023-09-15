@@ -16,12 +16,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
       - run: echo "selected runner = ${{ runner.name }}"
-
-  install_dependencies:
-    needs: [runner]
-    runs-on: ${{ needs.runner.outputs.RUNNER }}
-
-    steps:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -43,7 +37,7 @@ jobs:
           pip install -r mlflow/requirements.txt
 
   pytest_flask:
-    needs: [install_dependencies, runner]
+    needs: [runner]
     runs-on: ${{ needs.runner.outputs.RUNNER }}
 
     steps:
@@ -59,7 +53,7 @@ jobs:
           pytest test_app.py
 
   pytest_fastapi:
-    needs: [install_dependencies, runner]
+    needs: [runner]
     runs-on: ${{ needs.runner.outputs.RUNNER }}
 
     steps:
