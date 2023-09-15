@@ -15,9 +15,11 @@ pip install -r requirements.txt
 
 ## Utilisation
 
-1. Placez vos images d'étoiles ou de constellations dans le dossier `images`.
-2. Exécutez le script `main.py` pour démarrer le programme de reconnaissance.
-3. Le programme analysera les images et affichera les résultats de reconnaissance des constellations identifiées.
+1. Ouvrez le dossier MuspellheimGnistor dans Visual Studio Code.
+2. Exécutez le script `run_app.py` pour démarrer le programme de reconnaissance.
+3. Aller ensuite sur la première url contenue dans le terminal.
+4. Une fois la page web ouverte, entrez l'url d'une image puis cliquer sur le bouton "Lancez la prédiction" pour que l'application fonctionne.
+
 
 ## Structure du Projet
 
