@@ -50,7 +50,8 @@ jobs:
         run: |
           cd ./flask
           pip install -r requirements.txt
-          pytest test_app.py
+          npm install wait-on
+          wait-on http://127.0.0.1:8000/ && pytest test_app.py
 
   pytest_fastapi:
     needs: install_dependencies
