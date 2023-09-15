@@ -22,6 +22,11 @@ jobs:
 
       - name: Cache dependencies
         uses: actions/cache@v3
+        with:
+          path: /github/home/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
 
       - name: Install Dependencies
         run: |
@@ -89,6 +94,6 @@ jobs:
 
       - name: Check code style with Flake8
         run: flake8 .
-
+        
       - name: Format code with Black
         run: black .
