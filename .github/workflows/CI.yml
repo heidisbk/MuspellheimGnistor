@@ -8,6 +8,7 @@ on:
 jobs:
   install_dependencies:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
       - name: Checkout Repository
@@ -20,12 +21,7 @@ jobs:
           cache: "pip"
 
       - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: pip-${{ runner.os }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
-          restore-keys: |
-            pip-${{ runner.os }}-
+        uses: actions/cache@v3
 
       - name: Install Dependencies
         run: |
@@ -34,8 +30,9 @@ jobs:
           pip install -r mlflow/requirements.txt
 
   pytest_flask:
-    needs: install_dependencies
+    needs: [install_dependencies]
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
       - name: Checkout Repository
@@ -46,12 +43,6 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Start FastAPI
-        run: |
-          cd ./fastapi
-          uvicorn app:app &
-          sleep 5  # Attendre quelques secondes pour que FastAPI démarre
-
       - name: Run Flask Tests
         run: |
           cd ./flask
@@ -59,8 +50,9 @@ jobs:
           pytest test_app.py
 
   pytest_fastapi:
-    needs: install_dependencies
+    needs: [install_dependencies]
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
       - name: Checkout Repository
@@ -76,3 +68,27 @@ jobs:
           cd ./fastapi
           pip install -r requirements.txt
           pytest test_app.py
+
+  linting:
+    needs: [pytest_flask,pytest_fastapi]
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Black and Flake8
+        run: |
+          pip install black flake8
+
+      - name: Check code style with Flake8
+        run: flake8 .
+
+      - name: Format code with Black
+        run: black .
