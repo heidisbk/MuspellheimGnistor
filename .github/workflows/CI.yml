@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev_traitement_dataset
+
+jobs:
+  install_dependencies:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: /github/home/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('fastapi/requirements.txt', 'flask/requirements.txt', 'mlflow/requirements.txt') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: |
+          pip install -r fastapi/requirements.txt 
+          pip install -r flask/requirements.txt    
+          pip install -r mlflow/requirements.txt
+
+  pytest_flask:
+    needs: [install_dependencies]
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Run Flask Tests
+        run: |
+          cd ./flask
+          pip install -r requirements.txt
+          pytest test_app.py
+
+  pytest_fastapi:
+    needs: [install_dependencies]
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Run FastAPI Tests
+        run: |
+          cd ./fastapi
+          pip install -r requirements.txt
+          pytest test_app.py
+
+  linting:
+    needs: [pytest_flask,pytest_fastapi]
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Black and Flake8
+        run: |
+          pip install black flake8
+
+      - name: Check code style with Flake8
+        run: flake8 .
+        
+      - name: Format code with Black
+        run: black .

@@ -1,0 +1,10 @@
+[flake8]
+per-file-ignores =
+    fastapi/app.py: E501
+    fastapi/test_app.py : E501
+    flask/app_api.py : E501
+    flask/test_app.py : E501
+    mlflow/app.py : E501
+    mlflow/save_model.py : E501
+    muspellheim/train.py : E501
+    run_app.py : E501
