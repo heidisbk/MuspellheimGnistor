@@ -1,0 +1,7 @@
+numpy
+flask
+torch
+azure-storage-blob
+fastapi
+uvicorn[standard]
+pydantic

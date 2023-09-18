@@ -15,10 +15,10 @@ pip install -r requirements.txt
 
 ## Utilisation
 
-1. Ouvrez le dossier MuspellheimGnistor dans Visual Studio Code.
-2. Exécutez le script `run_app.py` pour démarrer le programme de reconnaissance.
-3. Aller ensuite sur la première url contenue dans le terminal.
-4. Une fois la page web ouverte, entrez l'url d'une image puis cliquer sur le bouton "Lancez la prédiction" pour que l'application fonctionne.
+1. Ouvrez le dossier MuspellheimGnistor dans Visual Studio Code (ou un autre IDE).
+2. Exécutez le script suivant pour lancer l'application : `run_app.py`
+3. Copiez l'URL affichée dans le terminal dans un navigateur.
+4. Entrez l'URL de l'image souhaitée pour la soumettre à l'algorithme puis cliquez sur le bouton situé au dessous.
 
 
 ## Structure du Projet
